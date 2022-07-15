@@ -28,7 +28,7 @@ struct MeetingView: View {
                     Label("600", systemImage: "hourglass.tophalf.fill")
                 }
             }
-            // accessibility features of above stacks
+            // accessibility features of above stacks 
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Time Remaining")
             .accessibilityValue("10 minutes")
