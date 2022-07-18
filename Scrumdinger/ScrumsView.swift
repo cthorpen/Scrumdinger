@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct ScrumsView: View {
-    let scrums: [DailyScrum]
+    
+    @Binding var scrums: [DailyScrum]
+    
     var body: some View {
         List {
             // populate list using a ForEach view
-            ForEach(scrums) { scrum in
+            ForEach($scrums) { $scrum in
                 // The destination presents a single view in the
                 // navigation hierarchy when a user interacts with the element.
-                NavigationLink(destination: Text(scrum.title)) {
+                NavigationLink(destination: DetailView(scrum: $scrum)) {
                     CardView(scrum: scrum)
                 }
                 .listRowBackground(scrum.theme.mainColor)
@@ -35,7 +37,7 @@ struct ScrumsView_Previews: PreviewProvider {
     static var previews: some View {
         // for navigation heirarchy of the apps views
         NavigationView {
-            ScrumsView(scrums: DailyScrum.sampleData)
+            ScrumsView(scrums: .constant(DailyScrum.sampleData))
         }
     }
 }

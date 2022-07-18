@@ -8,7 +8,7 @@
 import SwiftUI
 
 //theme enumeration for meetings
-enum Theme: String {
+enum Theme: String, CaseIterable, Identifiable {
     //cases for each color listed in the Themes folder in the assets catalog
     case bubblegum
     case buttercup
@@ -38,6 +38,14 @@ enum Theme: String {
     // mainColor property creates a color using the enum's rawValue. initializes a color from the asset catalog
     var mainColor: Color {
         Color(rawValue)
+    }
+    
+    var name: String {
+        rawValue.capitalized
+    }
+    
+    var id: String {
+        name
     }
     
 }
