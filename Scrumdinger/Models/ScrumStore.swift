@@ -21,6 +21,24 @@ class ScrumStore: ObservableObject {
             .appendingPathComponent("scrums.data") // to return the URL of a file named scrums.data.
     }
     
+    static func load() async throws -> [DailyScrum] {
+        // Calling withCheckedThrowingContinuation suspends the load function,
+        // then passes a continuation into a closure that you provide.
+        // A continuation is a value that represents the code after an awaited function
+        try await withCheckedThrowingContinuation { continuation in
+            load { result in
+                switch result {
+                // Upon failure, send the error to the continuation closure.
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                // Upon success, send the scrums to the continuation closure.
+                case .success(let scrums):
+                    continuation.resume(returning: scrums)
+                }
+            }
+        }
+    }
+    
     /// Result is a single type that represents the outcome of an operation,
     /// whether it’s a success or failure. The load function accepts a
     /// completion closure that it calls asynchronously with either an array of scrums or an error.
@@ -47,6 +65,25 @@ class ScrumStore: ObservableObject {
             } catch {
                 DispatchQueue.main.async {
                     completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    // static function that asynchronously returns an Int
+    // The save function returns a value that callers of the function may not use.
+    // The @discardableResult attribute disables warnings about the unused return value.
+    @discardableResult
+    static func save(scrums: [DailyScrum]) async throws -> Int {
+        try await withCheckedThrowingContinuation { continuation in
+            // legacy save function
+            save(scrums: scrums) { result in
+                //Finish the function by switching over the result, following the same pattern as the load function
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let scrumsSaved):
+                    continuation.resume(returning: scrumsSaved)
                 }
             }
         }
