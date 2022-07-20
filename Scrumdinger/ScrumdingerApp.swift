@@ -12,7 +12,8 @@ struct ScrumdingerApp: App {
     
     // The @StateObject property wrapper creates a single instance of
     // an observable object for each instance of the structure that declares it.
-   @StateObject private var store = ScrumStore()
+    @StateObject private var store = ScrumStore()
+    @State private var errorWrapper: ErrorWrapper?
     
     var body: some Scene {
         WindowGroup {
@@ -24,7 +25,7 @@ struct ScrumdingerApp: App {
                         do {
                             try await ScrumStore.save(scrums: store.scrums)
                         } catch {
-                            fatalError("Error saving scrums.")
+                            errorWrapper = ErrorWrapper(error: error, guidance: "Try again later.")
                         }
                     }
                 }
@@ -33,8 +34,15 @@ struct ScrumdingerApp: App {
                 do {
                     store.scrums = try await ScrumStore.load()
                 } catch {
-                    fatalError("Error loading scrums.")
+                    errorWrapper = ErrorWrapper(error: error, guidance: "Scrumdinger will load sample data and continue.")
                 }
+            }
+            // The modal sheet provides a closure to execute code when the user
+            // dismisses the modal sheet, and a closure to supply a view to present modally.
+            .sheet(item: $errorWrapper, onDismiss: {
+                store.scrums = DailyScrum.sampleData
+            }) { wrapper in
+                ErrorView(errorWrapper: wrapper)
             }
         }
     }
