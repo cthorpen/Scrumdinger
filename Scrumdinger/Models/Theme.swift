@@ -8,7 +8,7 @@
 import SwiftUI
 
 //theme enumeration for meetings
-enum Theme: String, CaseIterable, Identifiable {
+enum Theme: String, CaseIterable, Identifiable, Codable {
     //cases for each color listed in the Themes folder in the assets catalog
     case bubblegum
     case buttercup
